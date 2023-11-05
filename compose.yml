@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres
+    build: db
+    restart: always
+    user: postgres
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=mlas
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    networks:
+      - back-net
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: app
+    restart: always
+    secrets:
+      - db-password
+    ports:
+      - 8000:8000
+    networks:
+      - back-net
+      - front-net
+    volumes:
+      - './app:/app'
+    depends_on:
+      db:
+        condition: service_healthy
+
+  proxy:
+    build: proxy
+    restart: always
+    ports:
+      - 80:80
+    depends_on: 
+      - app
+    networks:
+      - front-net
+
+volumes:
+  db-data:
+
+secrets:
+  db-password:
+    file: db/password.txt
+
+networks:
+  back-net:
+  front-net:
