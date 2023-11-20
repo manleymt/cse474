@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: Run Unit Tests
+    name: Run CSE474 Pipeline
     runs-on: ubuntu-latest
     env:
       COMPOSE_FILE: compose.yml

@@ -29,5 +29,9 @@ def _extend_app(app):
     debug_toolbar.init_app(app)
 
 
-def _register_modules(app):
-    app.register_blueprint(public_module)
+def _register_modules(app): app.register_blueprint(public_module)
+
+
+
+
+
