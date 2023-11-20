@@ -1,1 +1,35 @@
 
+name: cse474 pipeline
+
+on:
+  pull_request:
+  push: { branches: [ "main" ] }
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILE: compose.yml
+      COMPOSE_PROJECT_NAME: cse474
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Print out Docker Versions
+      run: |
+        docker --version
+        docker-compose --version
+
+    - name: Build & Start Docker Images
+      run: ./system.sh start -d
+
+    # do other cools stuff, like seed a database
+
+    - name: Run Tests
+      run: ./system.sh test
+
+    - name: Stop Docker
+      if: always()
+      run: ./system.sh clean
