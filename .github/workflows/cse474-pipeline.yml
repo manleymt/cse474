@@ -27,8 +27,11 @@ jobs:
 
     # do other cools stuff, like seed a database
 
-    - name: Run Tests
-      run: ./system.sh test
+    - name: Run System Verification
+      run: ./system.sh verify
+
+    - name: Run System Validation
+      run: ./system.sh validate
 
     - name: Stop Docker
       if: always()
